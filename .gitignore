@@ -1,0 +1,43 @@
+# ============================================
+# Mutual Fund FAQ Assistant — .gitignore
+# ============================================
+
+# --- Environment & Secrets ---
+.env
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# --- Virtual Environment ---
+venv/
+.venv/
+env/
+
+# --- ChromaDB Local Storage ---
+chroma_db/
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+
+# --- Data (scraped cache) ---
+data/raw/
+data/cache/
