@@ -23,8 +23,9 @@ requests>=2.31.0
 lxml>=5.0.0
 
 # --- Backend API ---
-fastapi>=0.115.0
-uvicorn>=0.34.0
+# (Removed fastapi and uvicorn since we moved to a Streamlit Monolith)
+langchain-huggingface>=0.0.3
+langchain-chroma>=0.1.1
 
 # --- Frontend UI ---
 streamlit>=1.40.0
