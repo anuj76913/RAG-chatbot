@@ -38,6 +38,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add chroma_db/
+          git add -f chroma_db/
           git commit -m "Automated daily ingestion of mutual fund data" || echo "No changes to commit"
           git push
