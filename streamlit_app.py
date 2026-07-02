@@ -1,7 +1,10 @@
 import streamlit as st
-import requests
 
 from config.settings import settings
+from src.retrieval.guardrails import Guardrails
+from src.retrieval.retriever import Retriever
+from src.generation.generator import ResponseGenerator
+from src.api.sanitizer import sanitize_input
 
 # Configure Streamlit page
 st.set_page_config(
@@ -9,6 +12,18 @@ st.set_page_config(
     page_icon="📈",
     layout="centered"
 )
+
+# Load heavy AI models exactly once per server startup
+@st.cache_resource
+def get_ai_components():
+    settings.validate()
+    return Guardrails(), Retriever(), ResponseGenerator()
+
+try:
+    guardrails, retriever, generator = get_ai_components()
+except ValueError as e:
+    st.error(f"Configuration Error: {e}")
+    st.stop()
 
 # Phase 5.2: Disclaimer Banner
 st.warning("⚠️ **Facts-only. No investment advice.** This assistant provides factual information from authorized sources. It does not provide investment recommendations or opinions.")
@@ -34,7 +49,7 @@ for message in st.session_state.messages:
             st.caption(message["footer"])
 
 def send_query(query: str):
-    """Sends query to FastAPI backend and updates UI."""
+    """Processes query using local AI components and updates UI."""
     st.session_state.messages.append({"role": "user", "content": query})
     with st.chat_message("user"):
         st.markdown(query)
@@ -44,18 +59,24 @@ def send_query(query: str):
         message_placeholder.markdown("Thinking...")
         
         try:
-            # Call FastAPI backend
-            response = requests.post(
-                f"http://{settings.APP_HOST}:{settings.APP_PORT}/ask",
-                json={"query": query},
-                timeout=30
-            )
-            response.raise_for_status()
-            data = response.json()
+            sanitized_query = sanitize_input(query)
             
-            answer = data["answer"]
-            sources = data["sources"]
-            footer = data["footer"]
+            # 1. Guardrails
+            if not guardrails.check_query(sanitized_query):
+                answer = "I'm sorry, but I cannot provide investment advice or recommendations. For financial advice, please consult a registered advisor or visit AMFI investor education pages."
+                sources = []
+                footer = "Last updated from sources: N/A"
+            else:
+                # 2. Retrieval
+                results = retriever.search(sanitized_query, top_k=settings.TOP_K_RESULTS)
+                formatted_context = retriever.format_context(results)
+                results_metadata = [res['metadata'] for res in results]
+                
+                # 3. Generation
+                final_response = generator.generate(sanitized_query, formatted_context, results_metadata)
+                answer = final_response["answer"]
+                sources = final_response["sources"]
+                footer = final_response["footer"]
             
             message_placeholder.markdown(answer)
             if sources:
@@ -70,8 +91,8 @@ def send_query(query: str):
                 "footer": footer
             })
             
-        except requests.RequestException as e:
-            message_placeholder.markdown(f"Error connecting to backend: {e}")
+        except Exception as e:
+            message_placeholder.markdown(f"Error processing request: {e}")
 
 
 # Phase 5.4: Example Questions
