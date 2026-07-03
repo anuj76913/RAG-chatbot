@@ -2,8 +2,9 @@ name: Scheduled Data Ingestion
 
 on:
   schedule:
-    # 10:30 AM IST is 5:00 AM UTC
-    - cron: '0 5 * * *'
+    # Scheduled to run at 5:17 AM UTC (10:47 AM IST) 
+    # (Running at an odd minute drastically reduces GitHub Actions delays)
+    - cron: '17 5 * * *'
   workflow_dispatch: # Allows manual trigger from the Actions tab
 
 permissions:
