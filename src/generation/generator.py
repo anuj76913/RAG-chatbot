@@ -64,7 +64,7 @@ Context:
         except Exception as e:
             print(f"LLM Generation Error: {e}")
             return {
-                "answer": "I'm currently experiencing high traffic and hit my rate limit. Please try again in a few seconds.",
+                "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {str(e)}",
                 "sources": [],
                 "footer": "Last updated from sources: N/A"
             }
