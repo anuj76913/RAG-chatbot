@@ -62,9 +62,15 @@ Context:
         try:
             response_msg = self._invoke_with_retry(query, formatted_context)
         except Exception as e:
-            print(f"LLM Generation Error: {e}")
+            error_msg = str(e)
+            if hasattr(e, 'message'):
+                error_msg = e.message
+            elif hasattr(e, 'response'):
+                error_msg = f"{e.response.status_code} - {e.response.text}"
+            
+            print(f"LLM Generation Error: {error_msg}")
             return {
-                "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {str(e)}",
+                "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {error_msg}",
                 "sources": [],
                 "footer": "Last updated from sources: N/A"
             }

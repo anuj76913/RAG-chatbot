@@ -15,7 +15,7 @@ st.set_page_config(
 
 # Load heavy AI models exactly once per server startup
 @st.cache_resource
-def get_ai_components():
+def get_ai_components(_cache_buster="v2"):
     import os
     # Ensure Streamlit secrets are explicitly injected into settings
     if "GROQ_API_KEY" in st.secrets:
