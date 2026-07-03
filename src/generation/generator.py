@@ -36,11 +36,6 @@ Context:
         
         self.chain = self.prompt | self.llm
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=2, max=10),
-        stop=stop_after_attempt(3),
-        retry=retry_if_exception_type(Exception)
-    )
     def _invoke_with_retry(self, query: str, formatted_context: str):
         return self.chain.invoke({
             "context": formatted_context,
