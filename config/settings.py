@@ -17,7 +17,7 @@ class Settings:
 
     # --- Groq LLM ---
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
-    GROQ_MODEL_NAME: str = os.getenv("GROQ_MODEL_NAME", "llama-3.1-8b-instant")
+    GROQ_MODEL_NAME: str = os.getenv("GROQ_MODEL_NAME", "llama-3.3-70b-versatile")
 
     # --- Embedding Model ---
     EMBEDDING_MODEL_NAME: str = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-small-en-v1.5")
@@ -30,7 +30,7 @@ class Settings:
     APP_HOST: str = os.getenv("APP_HOST", "127.0.0.1")
     APP_PORT: int = int(os.getenv("APP_PORT", "8000"))
     LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.0"))
-    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "5"))
+    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "2"))
 
     # --- Corpus URLs (Exclusive data source) ---
     CORPUS_URLS: list[str] = [
