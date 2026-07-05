@@ -1,5 +1,5 @@
 from typing import List, Dict
-from langchain_experimental.text_splitter import SemanticChunker
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -15,8 +15,9 @@ class IngestionProcessor:
             model_kwargs={'device': 'cpu'},
             encode_kwargs={'normalize_embeddings': True}
         )
-        self.text_splitter = SemanticChunker(
-            self.embeddings, breakpoint_threshold_type="percentile"
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=600,
+            chunk_overlap=100
         )
         
         # Ensure persist directory exists

@@ -30,7 +30,7 @@ class Settings:
     APP_HOST: str = os.getenv("APP_HOST", "127.0.0.1")
     APP_PORT: int = int(os.getenv("APP_PORT", "8000"))
     LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.0"))
-    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "2"))
+    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "6"))
 
     # --- Corpus URLs (Exclusive data source) ---
     CORPUS_URLS: list[str] = [
