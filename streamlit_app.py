@@ -17,10 +17,16 @@ st.set_page_config(
 @st.cache_resource
 def get_ai_components(_cache_buster="v3"):
     import os
-    # Ensure Streamlit secrets are explicitly injected into settings
-    if "GROQ_API_KEY" in st.secrets:
-        settings.GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
-        os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+    # Ensure Streamlit secrets are explicitly injected into settings if present
+    try:
+        if "GROQ_API_KEY" in st.secrets:
+            settings.GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+            os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+        if "GROQ_MODEL_NAME" in st.secrets:
+            settings.GROQ_MODEL_NAME = st.secrets["GROQ_MODEL_NAME"]
+            os.environ["GROQ_MODEL_NAME"] = st.secrets["GROQ_MODEL_NAME"]
+    except Exception:
+        pass
         
     settings.validate()
     return Guardrails(), Retriever(), ResponseGenerator()

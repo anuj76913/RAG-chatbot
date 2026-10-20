@@ -58,17 +58,47 @@ Context:
             response_msg = self._invoke_with_retry(query, formatted_context)
         except Exception as e:
             error_msg = str(e)
-            if hasattr(e, 'message'):
-                error_msg = e.message
-            elif hasattr(e, 'response'):
-                error_msg = f"{e.response.status_code} - {e.response.text}"
-            
-            print(f"LLM Generation Error: {error_msg}")
-            return {
-                "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {error_msg}",
-                "sources": [],
-                "footer": "Last updated from sources: N/A"
-            }
+            if "model_not_found" in error_msg or "does not exist" in error_msg:
+                fallback_models = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
+                recovered = False
+                for fb_model in fallback_models:
+                    if fb_model != getattr(self.llm, "model_name", None):
+                        try:
+                            print(f"Model failed. Falling back to {fb_model}...")
+                            self.llm = ChatGroq(
+                                model=fb_model,
+                                temperature=settings.LLM_TEMPERATURE,
+                                api_key=settings.GROQ_API_KEY
+                            )
+                            self.chain = self.prompt | self.llm
+                            response_msg = self._invoke_with_retry(query, formatted_context)
+                            recovered = True
+                            break
+                        except Exception:
+                            continue
+                if not recovered:
+                    if hasattr(e, 'message'):
+                        error_msg = e.message
+                    elif hasattr(e, 'response'):
+                        error_msg = f"{e.response.status_code} - {e.response.text}"
+                    print(f"LLM Generation Error: {error_msg}")
+                    return {
+                        "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {error_msg}",
+                        "sources": [],
+                        "footer": "Last updated from sources: N/A"
+                    }
+            else:
+                if hasattr(e, 'message'):
+                    error_msg = e.message
+                elif hasattr(e, 'response'):
+                    error_msg = f"{e.response.status_code} - {e.response.text}"
+                
+                print(f"LLM Generation Error: {error_msg}")
+                return {
+                    "answer": f"SYSTEM DEBUG: An error occurred communicating with Groq: {error_msg}",
+                    "sources": [],
+                    "footer": "Last updated from sources: N/A"
+                }
         
         raw_answer = response_msg.content.strip()
         

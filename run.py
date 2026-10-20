@@ -6,10 +6,14 @@ def main():
     # Suppress the Streamlit welcome/email prompt
     os.environ["STREAMLIT_EMAIL"] = ""
     
-    print("Starting Streamlit app locally...")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    venv_python = os.path.join(base_dir, "venv", "Scripts", "python.exe")
+    python_exe = venv_python if os.path.exists(venv_python) else sys.executable
+
+    print(f"Starting Streamlit app locally with {python_exe}...")
     # Start the Streamlit app
     app = subprocess.Popen(
-        [sys.executable, "-m", "streamlit", "run", "streamlit_app.py", "--server.port", "8501"],
+        [python_exe, "-m", "streamlit", "run", "streamlit_app.py", "--server.port", "8501"],
         stdout=sys.stdout,
         stderr=sys.stderr
     )
