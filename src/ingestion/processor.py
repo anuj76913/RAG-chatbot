@@ -57,6 +57,17 @@ class IngestionProcessor:
             print(f"Created {len(chunks)} chunks for {data['scheme_name']}")
             
         if docs_to_store:
+            # Delete stale documents from existing collection before adding fresh ones
+            try:
+                self.vector_store.delete_collection()
+                self.vector_store = Chroma(
+                    collection_name=settings.CHROMA_COLLECTION_NAME,
+                    embedding_function=self.embeddings,
+                    persist_directory=settings.CHROMA_PERSIST_DIR
+                )
+            except Exception as e:
+                print(f"Collection reset warning: {e}")
+                
             print(f"Storing {len(docs_to_store)} total chunks to ChromaDB...")
             self.vector_store.add_documents(docs_to_store)
             print("Data stored successfully!")

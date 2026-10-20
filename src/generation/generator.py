@@ -25,6 +25,7 @@ CRITICAL RULES:
 5. Do not use external knowledge.
 6. AUM CONFLICT RESOLUTION: If you see conflicting AUM numbers, ALWAYS prefer the explicit "Fund size (AUM)" metric over the textual "About" or "Total AUM" paragraphs.
 7. SOURCE CITATION: You MUST end your response with a new line exactly like this: "USED_URL: <the Source URL of the specific document you used to answer the question>"
+8. RECENCY: If the context contains multiple numbers or dates for a metric (such as NAV or AUM), ALWAYS use the most recent date and latest figure available in the context.
 
 Context:
 {context}

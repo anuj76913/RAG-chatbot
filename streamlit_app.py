@@ -201,10 +201,10 @@ with st.sidebar:
     st.caption("Factual Groww data indexed for 5 selected schemes:")
     
     funds = [
-        {"name": "HDFC Large Cap Fund", "tag": "Equity • Large Cap", "metric": "AUM: ₹37,808 Cr"},
+        {"name": "HDFC Large Cap Fund", "tag": "Equity • Large Cap", "metric": "AUM: ₹37,294 Cr"},
         {"name": "HDFC Mid Cap Fund", "tag": "Equity • Mid Cap", "metric": "AUM: ₹76,432 Cr"},
         {"name": "HDFC Small Cap Fund", "tag": "Equity • Small Cap", "metric": "AUM: ₹34,185 Cr"},
-        {"name": "HDFC Gold ETF FoF", "tag": "Commodity • Gold", "metric": "NAV: ₹43.28"},
+        {"name": "HDFC Gold ETF FoF", "tag": "Commodity • Gold", "metric": "NAV: ₹45.20"},
         {"name": "HDFC Silver ETF FoF", "tag": "Commodity • Silver", "metric": "NAV: ₹35.65"},
     ]
     
