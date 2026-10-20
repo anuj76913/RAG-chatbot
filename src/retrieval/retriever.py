@@ -28,7 +28,19 @@ class Retriever:
         """
         # Fetch matching documents with similarity scores
         # Note: Chroma similarity_search_with_score returns distance (lower is better)
-        docs_and_scores = self.vector_store.similarity_search_with_score(query, k=top_k)
+        try:
+            docs_and_scores = self.vector_store.similarity_search_with_score(query, k=top_k)
+        except Exception as e:
+            if "does not exist" in str(e) or "Collection" in str(e):
+                print(f"ChromaDB collection out of sync: {e}. Reinitializing vector store...")
+                self.vector_store = Chroma(
+                    collection_name=settings.CHROMA_COLLECTION_NAME,
+                    embedding_function=self.embeddings,
+                    persist_directory=settings.CHROMA_PERSIST_DIR
+                )
+                docs_and_scores = self.vector_store.similarity_search_with_score(query, k=top_k)
+            else:
+                raise e
         
         results = []
         for doc, score in docs_and_scores:
