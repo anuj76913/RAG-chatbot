@@ -70,5 +70,30 @@ python run.py
 ```
 This will automatically open the web app in your default browser at `http://localhost:8501`.
 
+## 🚀 Deployment (Railway backend + Vercel frontend)
+
+```
+Browser ──> Vercel (frontend/, static) ──/api/*──> Railway (FastAPI + ChromaDB + BGE embeddings) ──> Groq
+```
+
+Vercel can't host the backend (PyTorch + embeddings exceed serverless limits), so the RAG engine runs on Railway and Vercel serves the static chat UI, proxying `/api/*` to Railway.
+
+### 1. Backend on Railway
+1. Push this repo to GitHub, then in Railway: **New Project → Deploy from GitHub repo** → pick this repo (root directory `/`).
+2. Railway picks up `railway.json` and builds the `Dockerfile` (CPU-only torch, embedding model and `chroma_db/` baked into the image).
+3. **Variables** tab → add:
+   - `GROQ_API_KEY` = your Groq key (required)
+   - `GROQ_MODEL_NAME` = `openai/gpt-oss-120b` (optional)
+   - `ALLOWED_ORIGINS` = `https://<your-app>.vercel.app` (optional; only needed if the browser calls Railway directly)
+4. **Settings → Networking → Generate Domain**. Verify `https://<railway-domain>/health` returns `{"status":"ok"}`.
+
+The daily GitHub Actions ingestion commits a refreshed `chroma_db/`, which triggers an automatic Railway redeploy.
+
+### 2. Frontend on Vercel
+1. Edit `frontend/vercel.json` and replace `YOUR-RAILWAY-APP.up.railway.app` with your Railway domain; commit and push.
+2. In Vercel: **Add New → Project** → import the same repo → set **Root Directory** to `frontend`, Framework Preset **Other**, no build command → Deploy.
+
+To test the frontend locally against a local backend: `python src/api/main.py`, then open `frontend/index.html?api=http://localhost:8000`.
+
 ## 🛑 Stopping the Servers
 To stop the servers gracefully, press `CTRL+C` in the terminal where `run.py` is running.

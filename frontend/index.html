@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HDFC Fund Assistant</title>
+  <meta name="description" content="Factual RAG assistant for 5 HDFC mutual funds, built on public Groww data." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <span class="logo">📈</span>
+        <span class="logo-text">Fund Assistant</span>
+        <button class="icon-btn close-sidebar" id="closeSidebar" aria-label="Close menu">✕</button>
+      </div>
+
+      <section>
+        <h2 class="side-title">Monitored funds</h2>
+        <p class="side-caption">Factual Groww data indexed for 5 schemes</p>
+        <ul class="fund-list">
+          <li class="fund-card"><span class="fund-name">HDFC Large Cap Fund</span><span class="fund-tag">Equity · Large Cap</span></li>
+          <li class="fund-card"><span class="fund-name">HDFC Mid Cap Fund</span><span class="fund-tag">Equity · Mid Cap</span></li>
+          <li class="fund-card"><span class="fund-name">HDFC Small Cap Fund</span><span class="fund-tag">Equity · Small Cap</span></li>
+          <li class="fund-card"><span class="fund-name">HDFC Gold ETF FoF</span><span class="fund-tag">Commodity · Gold</span></li>
+          <li class="fund-card"><span class="fund-name">HDFC Silver ETF FoF</span><span class="fund-tag">Commodity · Silver</span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="side-title">Quick queries</h2>
+        <div class="quick-list" id="quickList">
+          <button class="quick-btn">What is the exit load for HDFC Small Cap Fund?</button>
+          <button class="quick-btn">What is the expense ratio of HDFC Large Cap?</button>
+          <button class="quick-btn">Who is the fund manager for HDFC Mid Cap Fund?</button>
+          <button class="quick-btn">What is the NAV of HDFC Gold ETF?</button>
+          <button class="quick-btn">Should I invest in HDFC Mid Cap?</button>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="side-title">System</h2>
+        <ul class="sys-list">
+          <li><span>Vector store</span><code>ChromaDB</code></li>
+          <li><span>LLM</span><code id="llmModel">Groq</code></li>
+          <li><span>Embeddings</span><code id="embModel">bge-small-en-v1.5</code></li>
+          <li><span>Guardrails</span><code>SEBI advisory</code></li>
+        </ul>
+        <button class="clear-btn" id="clearBtn">Clear chat history</button>
+      </section>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn open-sidebar" id="openSidebar" aria-label="Open menu">☰</button>
+        <div class="status" id="status"><span class="dot"></span><span id="statusText">Connecting…</span></div>
+      </header>
+
+      <div class="scroll" id="scroll">
+        <div class="content">
+          <section class="hero">
+            <h1>HDFC Mutual Fund Research Assistant <span class="badge">RAG AI 3.0</span></h1>
+            <p>Ask natural-language questions about expense ratios, exit loads, fund managers, and historic performance based on public Groww data.</p>
+          </section>
+
+          <div class="compliance">
+            <strong>SEBI compliance notice:</strong> This assistant gives strictly factual answers from public Groww data. It does not provide financial opinions, recommendations, or investment advice.
+          </div>
+
+          <section class="features" id="features">
+            <div class="feature"><div class="feature-icon">🔍</div><h3>Fact-checked retrieval</h3><p>NAV, AUM, expense ratios, fund managers and historic returns, grounded in indexed sources.</p></div>
+            <div class="feature"><div class="feature-icon">🛡️</div><h3>Compliance guardrails</h3><p>Advisory questions like “Should I buy?” are blocked to stay within regulatory limits.</p></div>
+            <div class="feature"><div class="feature-icon">🔒</div><h3>PII scrubbing</h3><p>PAN, phone numbers and emails are removed from queries before processing.</p></div>
+          </section>
+
+          <div class="messages" id="messages" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <form class="composer" id="composer">
+        <textarea id="input" rows="1" maxlength="1000" placeholder="Ask about the 5 monitored HDFC funds…" aria-label="Your question"></textarea>
+        <button type="submit" class="send-btn" id="sendBtn" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
